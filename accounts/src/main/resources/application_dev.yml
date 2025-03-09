@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+build:
+  version: "5.0"
+
+accounts:
+  message: "Accounts Service - DEV"
+  contactDetails:
+    name: "Riverbank"
+    email: "riverbank@example.com"
+  onCallSupport:
+    - (123) 456-7890
+    - (987) 654-3210

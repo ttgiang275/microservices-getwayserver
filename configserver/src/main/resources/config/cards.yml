@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "cards"
+  config:
+    import:
+      - "cards-dev.yml"
+      - "cards-qa.yml"
+      - "cards-prod.yml"
+  profiles:
+    active:
+      - "dev"
+
+river:
+  name: "River - Cards Service"
+  age: 30
+  address:
+    city: "Pune"
+    state: "Maharashtra"
+    country: "India"

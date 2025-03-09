@@ -1,0 +1,22 @@
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: "accounts"
+#  config:
+#    import:
+#      - "accounts-dev.yml"
+#      - "accounts-qa.yml"
+#      - "accounts-prod.yml"
+#  profiles:
+#    active:
+#      - "dev"
+
+river:
+  name: "River - Accounts Service"
+  age: 30
+  address:
+    city: "Pune"
+    state: "Maharashtra"
+    country: "India"

@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+  application:
+    name: loans
+  datasource:
+    url: jdbc:h2:mem:loansdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+build:
+  version: "4.0"
+
+loans:
+  message: "Loans Service - DEV"
+  contactDetails:
+    name: "Riverbank"
+    email: "riverbank@example.com"
+  onCallSupport:
+    - (123) 456-7890
+    - (987) 654-3210

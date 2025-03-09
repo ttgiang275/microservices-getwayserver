@@ -1,0 +1,65 @@
+build:
+  version: "1.0"
+
+server:
+  port: 9000
+
+spring:
+  application:
+    name: cards
+  config:
+    import:
+      - "application_dev.yml"
+      - "application_qa.yml"
+      - "optional:configserver:http://localhost:8071/"
+  profiles:
+    active:
+      - "dev"
+#  rabbitmq:
+#    host: "localhost"
+#    port: 5672
+#    username: "guest"
+#    password: "guest"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      access: unrestricted
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+eureka:
+  instance:
+    #    Whenever the instance is started, it will register itself with the Eureka server
+    #  Use the IP address instead of hostname
+    prefer-ip-address: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "cards"
+    description: "Cards Service"
+    version: "1.0.0"
+
+logging:
+  level:
+    com:
+      river:
+        cards: DEBUG

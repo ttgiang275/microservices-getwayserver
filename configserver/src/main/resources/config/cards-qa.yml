@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: "qa"
+
+river:
+  name: "River - Cards Service - QA"
+  age: 30
+  address:
+    city: "Pune"
+    state: "Maharashtra"
+    country: "India"

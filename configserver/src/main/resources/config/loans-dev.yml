@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+river:
+  name: "River - Loans Service - DEV"
+  age: 30
+  address:
+    city: "Pune"
+    state: "Maharashtra"
+    country: "India"

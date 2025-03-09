@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "loans"
+  config:
+    import:
+      - "loans-dev.yml"
+      - "loans-qa.yml"
+      - "loans-prod.yml"
+  profiles:
+    active:
+      - "qa"
+
+river:
+  name: "River - Loans Service"
+  age: 30
+  address:
+    city: "Pune"
+    state: "Maharashtra"
+    country: "India"
