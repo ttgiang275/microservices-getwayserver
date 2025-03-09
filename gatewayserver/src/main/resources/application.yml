@@ -13,6 +13,16 @@ spring:
 #          enabled: true
           enabled: false
           lower-case-service-id: true
+      httpclient:
+        connect-timeout: 1000   #1s
+        response-timeout: 5000  #5s
+  data:
+    redis:
+      connect-timeout: 2000
+      host: localhost
+      port: 6379
+      timeout: 1000
+
 
 management:
   endpoints:
@@ -37,3 +47,13 @@ logging:
     com:
       river:
         gatewayserver: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        permitted-number-of-calls-in-half-open-state: 2
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+

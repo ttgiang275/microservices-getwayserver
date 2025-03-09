@@ -7,6 +7,11 @@ server:
 spring:
   application:
     name: accounts
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/accountsdb
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: root
   datasource:
     url: jdbc:h2:mem:accountsdb
     driver-class-name: org.h2.Driver
@@ -15,11 +20,6 @@ spring:
   h2:
     console:
       enabled: true
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/accountsdb
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    username: root
-#    password: root
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
@@ -36,6 +36,10 @@ spring:
   profiles:
     active:
       - "dev"
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 #  rabbitmq:
 #    host: "localhost"
 #    port: 5672
@@ -86,3 +90,57 @@ logging:
     com:
       river:
         accounts: DEBUG
+
+resilience4j:
+  # Circuit Breaker Configuration
+  # =============================
+  # The circuit breaker is a design pattern that prevents a cascade of failures
+  # when a service is down or not responding.
+  circuitbreaker:
+    # Configuration for the circuit breaker
+    configs:
+      # Default configuration for the circuit breaker
+      default:
+        # The size of the sliding window used to track failures
+        sliding-window-size: 10
+        # The number of permitted calls when the circuit is half-open
+        permitted-number-of-calls-in-half-open-state: 2
+        # The failure rate threshold (in percentage) that triggers the circuit to open
+        failure-rate-threshold: 50
+        # The wait duration (in milliseconds) before attempting to reset the circuit
+        wait-duration-in-open-state: 10000
+  # Retry configuration for resilience4j
+  retry:
+    # Define the default retry configuration
+    configs:
+      default:
+        # Maximum number of attempts to retry
+        max-attempts: 3
+        # Wait duration between retries (in milliseconds)
+        # Note: This value should be less than the circuit breaker wait duration to avoid triggering the circuit breaker immediately
+        wait-duration: 500
+        # Enable exponential backoff for retries
+        enable-exponential-backoff: true
+        # Multiplier for exponential backoff
+        exponential-backoff-multiplier: 2
+        # Ignore specific exceptions during retries
+        # ------------------------------------------
+        # A list of exceptions to ignore during retries.
+        # If an exception is ignored, it is not considered a failure.
+        ignore-exceptions:
+          # Ignore NullPointerException during retries
+          - java.lang.NullPointerException
+
+        # Retry exceptions
+        # ----------------
+        # A list of exceptions to retry.
+        # If an exception is retried, the operation is retried after the wait duration.
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    configs:
+      default:
+        timeout-duration: 1000
+        limit-refresh-period: 5000
+        limit-for-period: 1
+

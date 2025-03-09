@@ -249,6 +249,8 @@ public class CardsController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     public ResponseEntity<RiverDto> getRiverInfo() {
+        logger.debug("Invoking getRiverInfo ----------------------");
+//        throw new RuntimeException();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(riverDto);

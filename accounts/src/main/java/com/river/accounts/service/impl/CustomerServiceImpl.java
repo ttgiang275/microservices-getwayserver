@@ -15,6 +15,7 @@ import com.river.accounts.service.CustomerService;
 import com.river.accounts.service.client.CardsFeignClient;
 import com.river.accounts.service.client.LoansFeignClient;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,14 +43,14 @@ public class CustomerServiceImpl implements CustomerService {
         Account account = accountRepository.findByCustomerId(customer.getCustomerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString()));
 
-        CardsDto cardsDto = cardsFeignClient.fetchCardDetails(correlationId, mobileNumber).getBody();
+        ResponseEntity<CardsDto> cardsDtoResponseEntity = cardsFeignClient.fetchCardDetails(correlationId, mobileNumber);
 
-        LoansDto loansDto = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber).getBody();
+        ResponseEntity<LoansDto> loansDtoResponseEntity = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
 
-        CustomerDetailsDto customerDetailsDto = customerMapper.map(customer,  new CustomerDetailsDto());
+        CustomerDetailsDto customerDetailsDto = customerMapper.map(customer, new CustomerDetailsDto());
         customerDetailsDto.setAccount(accountMapper.map(account, new AccountDto()));
-        customerDetailsDto.setCard(cardsDto);
-        customerDetailsDto.setLoan(loansDto);
+        if (null != cardsDtoResponseEntity) customerDetailsDto.setCard(cardsDtoResponseEntity.getBody());
+        if (null != loansDtoResponseEntity) customerDetailsDto.setLoan(loansDtoResponseEntity.getBody());
         return customerDetailsDto;
 
     }

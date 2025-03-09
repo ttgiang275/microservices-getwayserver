@@ -3,6 +3,8 @@ package com.river.accounts.controller;
 import com.river.accounts.constants.AccountConstants;
 import com.river.accounts.dto.*;
 import com.river.accounts.service.AccountService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -20,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeoutException;
 
 @Validated
 @RestController
@@ -45,6 +50,8 @@ public class AccountsController {
 
     @Autowired
     private RiverDto riverDto;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
 
     @GetMapping(path = "/fetch")
     @Operation(
@@ -137,6 +144,7 @@ public class AccountsController {
         }
     }
 
+    @Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
     @GetMapping(path = "/build-info")
     @Operation(
             summary = "Get build information",
@@ -150,12 +158,22 @@ public class AccountsController {
                     description = "HTTP status internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-    public ResponseEntity<String> getBuildInfo() {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(buildVersion);
+    public ResponseEntity<String> getBuildInfo() throws TimeoutException {
+        logger.debug("Invoking getBuildInfo ----------------------");
+        throw new TimeoutException();
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(buildVersion);
     }
 
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        logger.debug("Invoking getBuildInfoFallback ----------------------");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Unknown");
+    }
+
+    @RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
     @GetMapping(path = "/java-version")
     @Operation(
             summary = "Get java version",
@@ -173,6 +191,13 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(env.getProperty("JAVA_HOME"));
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        logger.debug("Invoking getJavaVersionFallback ----------------------");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Unknown");
     }
 
     @GetMapping(path = "/contact-info")
