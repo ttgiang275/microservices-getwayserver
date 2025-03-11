@@ -67,10 +67,13 @@ management:
       enabled: true
 #        include: refresh
 #POST: http://localhost:8080/actuator/refresh
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 eureka:
   instance:
-    #    Whenever the instance is started, it will register itself with the Eureka server
+    #  Whenever the instance is started, it will register itself with the Eureka server
     #  Use the IP address instead of hostname
     prefer-ip-address: true
   client:
@@ -90,6 +93,8 @@ logging:
     com:
       river:
         accounts: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 resilience4j:
   # Circuit Breaker Configuration

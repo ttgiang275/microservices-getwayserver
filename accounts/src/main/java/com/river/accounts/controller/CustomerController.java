@@ -50,8 +50,9 @@ public class CustomerController {
             @Schema(example = "1234567890")
             String mobileNumber) {
 
-        logger.debug("correlation-id found: {}", correlationId);
+        logger.debug("fetchCustomerDetails method started");
         CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber, correlationId);
+        logger.debug("fetchCustomerDetails method ended");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerDetailsDto);
