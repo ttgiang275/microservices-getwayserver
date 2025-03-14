@@ -11,6 +11,7 @@
         <module name="gatewayserver" />
         <module name="cards" />
         <module name="configserver" />
+        <module name="message" />
         <module name="loans" />
       </profile>
       <profile name="Annotation profile for accounts" enabled="true">
@@ -18,6 +19,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
         <module name="accounts" />
@@ -36,6 +38,7 @@
       <module name="gatewayserver" options="-parameters" />
       <module name="gatewayserver1" options="-parameters" />
       <module name="loans" options="-parameters" />
+      <module name="message" options="-parameters" />
     </option>
   </component>
 </project>

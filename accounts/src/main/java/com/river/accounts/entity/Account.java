@@ -10,12 +10,14 @@ import org.hibernate.annotations.GenericGenerator;
 public class Account extends BaseEntity {
 
     @Id
-    private Integer accountNumber;
+    private Long accountNumber;
 
     private String accountType;
 
     private String branchAddress;
 
     private Integer customerId;
+
+    private Boolean communicationSw;
 
 }

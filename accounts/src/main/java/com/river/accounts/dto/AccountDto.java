@@ -14,7 +14,7 @@ public class AccountDto {
 
     @NotEmpty(message = "Account number can not be null or empty")
     @Schema(name = "Account number", description = "Account number", example = "1")
-    private Integer accountNumber;
+    private Long accountNumber;
 
     @NotEmpty(message = "Account type can not be null or empty")
     @Schema(name = "Account type", description = "Account type", example = "Savings")

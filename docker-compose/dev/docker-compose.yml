@@ -1,22 +1,22 @@
 services:
-#  rabbitmq:
-#    image: "rabbitmq:3.12-management"
-#    container_name: rabbitmq
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-#    healthcheck:
-#      test: rabbitmq-diagnostics check_port_connectivity
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 5s
-#    extends:
-#      file: common-config.yml
-#      service: network-deploy-service
+  rabbitmq:
+    image: "rabbitmq:3.12-management"
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   configserver:
-    image: "ttgiang275/configserver:s9"
+    image: "ttgiang275/configserver:s13"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -34,7 +34,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "ttgiang275/eurekaserver:s9"
+    image: "ttgiang275/eurekaserver:s13"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -54,7 +54,7 @@ services:
       service: microservice-configserver-config
 
   accounts:
-    image: "ttgiang275/accounts:s9"
+    image: "ttgiang275/accounts:s13"
     container_name: accounts-ms
     ports:
       - "8080:8080"
@@ -63,8 +63,11 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
+      SPRING_RABBITMQ_HOST: "rabbitmq"
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -76,7 +79,7 @@ services:
       service: microservice-eureka-config
 
   loans:
-    image: "ttgiang275/loans:s9"
+    image: "ttgiang275/loans:s13"
     container_name: loans-ms
     ports:
       - "8090:8090"
@@ -98,7 +101,7 @@ services:
       service: microservice-eureka-config
 
 #  loans1:
-#    image: "ttgiang275/loans:s9"
+#    image: "ttgiang275/loans:s13"
 #    container_name: loans-ms1
 #    ports:
 #      - "8091:8090"
@@ -114,7 +117,7 @@ services:
 #      service: microservice-eureka-config
 
   cards:
-    image: "ttgiang275/cards:s9"
+    image: "ttgiang275/cards:s13"
     container_name: cards-ms
     ports:
       - "9000:9000"
@@ -135,8 +138,20 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
 
+  message:
+    image: "eazybytes/message:s13"
+    container_name: message-ms
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   gatewayserver:
-    image: "ttgiang275/gatewayserver:s9"
+    image: "ttgiang275/gatewayserver:s13"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
